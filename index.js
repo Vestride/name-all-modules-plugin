@@ -1,17 +1,15 @@
-function NameAllModulesPlugin() {
-}
-
-NameAllModulesPlugin.prototype.apply = function (compiler) {
-    compiler.plugin("compilation", (compilation) => {
-      compilation.plugin("before-module-ids", (modules) => {
-        modules.forEach((module) => {
-          if (module.id !== null) {
-            return;
+class NameAllModulesPlugin {
+  apply(compiler) {
+    compiler.hooks.compilation.tap("NameAllModulesPlugin", compilation => {
+      compilation.hooks.beforeModuleIds.tap("NameAllModulesPlugin", modules => {
+        for (const module of modules) {
+          if (module.id === null) {
+            module.id = module.identifier();
           }
-          module.id = module.identifier();
-        });
+        }
       });
     });
-};
+  }
+}
 
 module.exports = NameAllModulesPlugin;
